@@ -39,7 +39,7 @@ async function summarize(text) {
             content: `Please summarize the following text: ${text}`,
           },
         ],
-        max_tokens: 60,
+        max_tokens: 600,
         n: 1,
         temperature: 0.5,
         stop: null,
