@@ -1,4 +1,17 @@
 //background.js
+
+function getAuthToken() {
+  return new Promise((resolve, reject) => {
+    chrome.identity.getAuthToken({ interactive: true }, (token) => {
+      if (chrome.runtime.lastError) {
+        reject(chrome.runtime.lastError);
+      } else {
+        resolve(token);
+      }
+    });
+  });
+}
+
 let apiKey = "";
 
 chrome.storage.sync.get(["apiKey"], (result) => {
@@ -36,7 +49,7 @@ async function summarize(text) {
           },
           {
             role: "user",
-            content: `Please summarize the following text: ${text}`,
+            content: `Please summarize the following text in 3 bullet points: ${text}`,
           },
         ],
         max_tokens: 600,
@@ -64,10 +77,16 @@ async function summarize(text) {
 // Add the listener to handle messages from the popup script
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === "summarizeText") {
-    summarize(request.text).then((summary) => {
-      sendResponse({ summary: summary });
-    });
-    // Keep the message channel open for the asynchronous response
-    return true;
+    try {
+      const token = getAuthToken();
+      console.log("token:", token);
+      summarize(request.text).then((summary) => {
+        sendResponse({ success: true, summary: summary });
+      });
+    } catch (error) {
+      sendResponse({ success: false, error: error.message });
+    }
   }
+  // Keep the message channel open for the asynchronous response
+  return true;
 });

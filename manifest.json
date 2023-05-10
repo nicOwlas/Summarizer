@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "ChatGPT Summarizer",
-  "version": "1.0",
+  "version": "1.01",
   "description": "Summarize the content of a webpage using ChatGPT",
   "action": {
     "default_popup": "popup.html",
@@ -13,7 +13,7 @@
   "icons": {
     "48": "icon.png"
   },
-  "permissions": ["activeTab", "scripting", "storage"],
+  "permissions": ["activeTab", "scripting", "storage", "identity"],
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
